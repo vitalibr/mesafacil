@@ -163,6 +163,13 @@ a cada push na branch `main`.
 - O 3D não detecta interferências entre sólidos; as verificações de montagem são as do motor 2D.
 - Área e massa são estimativas (aço a 7,85 g/cm³).
 
+## Privacidade
+
+Nenhum projeto ou desenho sai do seu navegador. Para saber quantas pessoas usam a ferramenta, o
+site conta acessos e algumas ações (baixar ZIP ou DXF, copiar o pedido de orçamento, abrir o 3D,
+configurar acessórios) com o [GoatCounter](https://www.goatcounter.com/), que não usa cookies e
+não guarda dados pessoais. Bloqueadores de anúncio podem desativar essa contagem sem afetar o uso.
+
 ## Aviso sobre fabricação
 
 Os desenhos são gerados conforme os parâmetros informados. Antes da fabricação, confira as

@@ -1,4 +1,5 @@
 import { useEffect, useRef, type KeyboardEvent } from 'react'
+import { track } from './analytics'
 import { CREATOR } from './creatorInfo'
 
 function YouTubeIcon() {
@@ -66,10 +67,16 @@ export function CreatorModal({ open, onClose }: { open: boolean; onClose: () => 
           </p>
         </div>
         <div className="grid gap-2 px-6 pb-4 pt-3">
-          <a ref={first} href={CREATOR.youtube} target="_blank" rel="noopener noreferrer" onClick={onClose} className="flex items-center justify-center gap-2 rounded-lg bg-[#ff0033] px-4 py-2.5 text-sm font-semibold text-white hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+          <a ref={first} href={CREATOR.youtube} target="_blank" rel="noopener noreferrer" onClick={() => {
+              track('vmgarage-youtube')
+              onClose()
+            }} className="flex items-center justify-center gap-2 rounded-lg bg-[#ff0033] px-4 py-2.5 text-sm font-semibold text-white hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
             <YouTubeIcon /> Inscreva-se no YouTube
           </a>
-          <a href={CREATOR.instagram} target="_blank" rel="noopener noreferrer" onClick={onClose} className="flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#f58529] via-[#dd2a7b] to-[#8134af] px-4 py-2.5 text-sm font-semibold text-white hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+          <a href={CREATOR.instagram} target="_blank" rel="noopener noreferrer" onClick={() => {
+              track('vmgarage-instagram')
+              onClose()
+            }} className="flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#f58529] via-[#dd2a7b] to-[#8134af] px-4 py-2.5 text-sm font-semibold text-white hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
             <InstagramIcon /> Siga no Instagram
           </a>
           <button type="button" onClick={onClose} className="mt-1 rounded-lg px-4 py-2 text-sm text-white/60 hover:text-white focus-visible:outline-2 focus-visible:outline-white" data-testid="creator-close">

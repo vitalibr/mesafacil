@@ -4,6 +4,11 @@ import { readFile } from 'node:fs/promises'
 
 const shots = 'test-output/screenshots'
 
+// os testes não devem contar acessos nem depender de rede externa
+test.beforeEach(async ({ page }) => {
+  await page.route('https://gc.zgo.at/**', (r) => r.fulfill({ status: 200, contentType: 'text/javascript', body: '' }))
+})
+
 async function open(page: Page, { tutorial = false } = {}) {
   await page.addInitScript((t) => {
     if (!t) localStorage.setItem('mesafacil:tutorial', 'pulado')

@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { arcFromBulge, bulgeOf } from '../engine/geom'
 import { placementMatrix } from '../engine/solids'
+import { track } from './analytics'
 import type { PartGeometry, PartInstance, Polygon } from '../engine/types'
 
 export interface Solid {
@@ -195,7 +196,10 @@ export default function Viewer3D({ solids, fitKey }: { solids: Solid[]; fitKey: 
       setExplode((e) => (e > 0.5 ? 0 : 1))
       return
     }
-    setAnimating((a) => !a)
+    setAnimating((a) => {
+      if (!a) track('animar-montagem')
+      return !a
+    })
   }
 
   // reenquadra quando o conjunto muda de tamanho

@@ -5,6 +5,7 @@ import type { ProjectConfig } from '../engine/types'
 import { downloadAccessoryZip, downloadItemDxf, type Notify } from './actions'
 import { PartsView } from './Drawings'
 import { Grid2, NumberField, Segmented, Toggle } from './fields'
+import { track } from './analytics'
 import { HELP } from './helpTexts'
 import { Icon } from './icons'
 import { StatusBar } from './Status'
@@ -166,7 +167,10 @@ function Configurator({
             <button role="tab" type="button" className="tab" aria-selected={mode === '2d'} onClick={() => setMode('2d')}>
               Peças (2D)
             </button>
-            <button role="tab" type="button" className="tab" aria-selected={mode === '3d'} onClick={() => setMode('3d')} data-testid="accessory-tab-3d">
+            <button role="tab" type="button" className="tab" aria-selected={mode === '3d'} onClick={() => {
+                setMode('3d')
+                track('abrir-3d', def.id)
+              }} data-testid="accessory-tab-3d">
               Montagem (3D)
             </button>
           </div>
@@ -263,6 +267,7 @@ export function AccessoriesPage({ config, setConfig, notify }: { config: Project
         onChange={setDraft}
         onAdd={() => {
           setConfig((c) => ({ ...c, accessories: [...c.accessories, draft] }))
+          track('acessorio-adicionar', draft.typeId)
           setEditing(draft.uid)
           setDraft(null)
           notify('Acessório adicionado ao projeto.')
@@ -296,7 +301,10 @@ export function AccessoriesPage({ config, setConfig, notify }: { config: Project
                     {pv.build.dimensions.filter((x) => !x.label.startsWith('Espessura')).map((x) => n(x.value)).join(' × ')} mm · chapa {n(Number(d.defaults.thickness))} mm · {pv.build.parts.length} chapa{pv.build.parts.length > 1 ? 's' : ''}
                   </p>
                 )}
-                <button type="button" className="btn mt-1" onClick={() => setDraft(createAccessoryInstance(d.id, config))} data-testid={`configure-${d.id}`}>
+                <button type="button" className="btn mt-1" onClick={() => {
+                    setDraft(createAccessoryInstance(d.id, config))
+                    track('acessorio-configurar', d.id)
+                  }} data-testid={`configure-${d.id}`}>
                   <Icon name="sliders" /> Configurar
                 </button>
               </div>

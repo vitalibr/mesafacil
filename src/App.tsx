@@ -18,6 +18,7 @@ import { downloadText, storage } from './ui/storage'
 import { Summary } from './ui/Summary'
 import { TUTORIAL_KEY, Tutorial, type TourPage, type TourPane } from './ui/Tutorial'
 import { useProject, type Updater } from './ui/useProject'
+import { track } from './ui/analytics'
 import { tableSolids } from './ui/solids'
 
 const Viewer3D = lazy(() => import('./ui/Viewer3D'))
@@ -177,6 +178,7 @@ export default function App() {
   }
   const saveProject = () => {
     downloadText(serializeProject(config), `${projectBaseName(project)}.json`, 'application/json')
+    track('salvar-projeto')
     notify('Projeto salvo.')
   }
   const loadProject = async (file: File) => {
@@ -185,6 +187,7 @@ export default function App() {
     if (!r.ok) return notify(r.error, 'error')
     setConfig(r.config as ProjectConfig)
     setSelected(null)
+    track('carregar-projeto')
     notify(r.notices.length ? `Projeto carregado (${r.notices.length} campo(s) completados com o padrão).` : 'Projeto carregado.')
   }
 
@@ -205,7 +208,10 @@ export default function App() {
           <button role="tab" type="button" className="tab" aria-selected={viewTab === 'parts'} onClick={() => setViewTab('parts')} data-testid="tab-parts">
             Peças para corte
           </button>
-          <button role="tab" type="button" className="tab" aria-selected={viewTab === '3d'} onClick={() => setViewTab('3d')} data-testid="tab-3d">
+          <button role="tab" type="button" className="tab" aria-selected={viewTab === '3d'} onClick={() => {
+              setViewTab('3d')
+              track('abrir-3d', 'mesa')
+            }} data-testid="tab-3d">
             3D
           </button>
           <button role="tab" type="button" className="tab hidden lg:block" aria-selected={viewTab === 'summary'} onClick={() => setViewTab('summary')} data-testid="tab-summary">
@@ -378,7 +384,8 @@ export default function App() {
 
       <Tutorial
         open={tutorial}
-        onClose={() => {
+        onClose={(result) => {
+          track(result === 'concluido' ? 'tutorial-concluido' : 'tutorial-pulado')
           setTutorial(false)
           if (creatorDue()) setCreator(true)
         }}
