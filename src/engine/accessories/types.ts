@@ -1,4 +1,4 @@
-import type { PartGeometry, ValidationIssue } from '../types'
+import type { PartGeometry, PartInstance, ValidationIssue } from '../types'
 
 /** Padrão de furação usado por um acessório: o da mesa ou um personalizado. */
 export interface HolePattern {
@@ -28,6 +28,8 @@ export interface AccessoryPart {
   name: string
   thickness: number
   geometry: PartGeometry
+  /** Posição no conjunto montado (Z para cima, apoiado na mesa em Z = 0). Ausente = deitada na mesa. */
+  placement?: PartInstance
 }
 
 export interface AccessoryDimension {

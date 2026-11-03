@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { Suspense, lazy, useMemo, useState } from 'react'
 import { ACCESSORIES, accessoryById, createAccessoryInstance, resolveAccessory, tablePattern, type AccessoryInstance, type ParamSpec, type ResolvedAccessory } from '../engine/accessories'
 import { exactBounds } from '../engine/geom'
 import type { ProjectConfig } from '../engine/types'
@@ -8,7 +8,10 @@ import { Grid2, NumberField, Segmented, Toggle } from './fields'
 import { HELP } from './helpTexts'
 import { Icon } from './icons'
 import { StatusBar } from './Status'
+import { accessorySolids } from './solids'
 import { geometryPaths } from './svg'
+
+const Viewer3D = lazy(() => import('./Viewer3D'))
 
 const n = (v: number) => v.toLocaleString('pt-BR', { maximumFractionDigits: 2 })
 
@@ -83,6 +86,8 @@ function Configurator({
   const resolved = useMemo(() => resolveAccessory(instance, config, inProject ? index : config.accessories.length), [instance, config, inProject, index])
   const [selected, setSelected] = useState<string | null>(null)
   const [advanced, setAdvanced] = useState(false)
+  const [mode, setMode] = useState<'2d' | '3d'>('2d')
+  const solids = useMemo(() => (resolved ? accessorySolids(resolved.build.parts) : []), [resolved])
   if (!resolved) return null
   const { def } = resolved
   const table = tablePattern(config)
@@ -156,8 +161,25 @@ function Configurator({
       </aside>
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3">
-        <StatusBar issues={resolved.issues} subject="Acessório" />
+        <div className="flex flex-wrap items-center gap-2">
+          <div role="tablist" aria-label="Visualização do acessório" className="flex rounded-lg bg-line/60 p-1">
+            <button role="tab" type="button" className="tab" aria-selected={mode === '2d'} onClick={() => setMode('2d')}>
+              Peças (2D)
+            </button>
+            <button role="tab" type="button" className="tab" aria-selected={mode === '3d'} onClick={() => setMode('3d')} data-testid="accessory-tab-3d">
+              Montagem (3D)
+            </button>
+          </div>
+          <div className="min-w-0 flex-1">
+            <StatusBar issues={resolved.issues} subject="Acessório" />
+          </div>
+        </div>
         <div className="card relative h-[55vh] min-h-[320px] overflow-hidden lg:h-auto lg:flex-1">
+          {mode === '3d' ? (
+            <Suspense fallback={<p className="p-6 text-sm text-muted">Carregando visualização 3D…</p>}>
+              <Viewer3D solids={solids} fitKey={`${def.id}|${resolved.build.dimensions.map((d) => Math.round(d.value)).join(',')}`} />
+            </Suspense>
+          ) : (
           <PartsView
             items={resolved.bom.map((b) => ({ key: b.code, title: `${b.description.split(' — ')[1]} · ${b.quantity / Math.max(1, instance.quantity)}×`, subtitle: `${n(b.length)} × ${n(b.height)} · chapa ${n(b.thickness)} mm`, geometry: b.geometry }))}
             selected={selected}
@@ -166,6 +188,7 @@ function Configurator({
             showDims
             fitKey={`${def.id}|${resolved.bom.map((b) => `${Math.round(b.length)}x${Math.round(b.height)}`).join(',')}`}
           />
+          )}
         </div>
         <div className="grid gap-3 md:grid-cols-2">
           <div className="card p-4 text-sm">

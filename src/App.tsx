@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { resolveAccessories } from './engine/accessories'
 import { createDefaultConfig } from './engine/defaults'
 import { parseProject, serializeProject } from './engine/serialize'
@@ -18,6 +18,9 @@ import { downloadText, storage } from './ui/storage'
 import { Summary } from './ui/Summary'
 import { TUTORIAL_KEY, Tutorial, type TourPage, type TourPane } from './ui/Tutorial'
 import { useProject, type Updater } from './ui/useProject'
+import { tableSolids } from './ui/solids'
+
+const Viewer3D = lazy(() => import('./ui/Viewer3D'))
 
 type Pane = TourPane
 type Page = TourPage
@@ -149,7 +152,7 @@ export default function App() {
   const actions = useMemo(() => makeActions(project, accessories, notify), [project, accessories, notify])
   const [page, setPage] = useState<Page>('mesa')
   const [pane, setPane] = useState<Pane>('view')
-  const [viewTab, setViewTab] = useState<'top' | 'parts' | 'summary'>('top')
+  const [viewTab, setViewTab] = useState<'top' | 'parts' | '3d' | 'summary'>('top')
   const [showGrid, setShowGrid] = useState(false)
   const [showDims, setShowDims] = useState(true)
   const [selected, setSelected] = useState<string | null>(null)
@@ -185,6 +188,7 @@ export default function App() {
   }
 
   const selectedItem = project.bom.find((b) => b.code === selected) ?? null
+  const solids3d = useMemo(() => tableSolids(project.parts), [project.parts])
   const allItems = [...project.bom, ...accessories.flatMap((a) => a.bom)]
   const totalItems = allItems.reduce((t, b) => t + b.quantity, 0)
   const uniqueItems = allItems.length
@@ -200,22 +204,33 @@ export default function App() {
           <button role="tab" type="button" className="tab" aria-selected={viewTab === 'parts'} onClick={() => setViewTab('parts')} data-testid="tab-parts">
             Peças para corte
           </button>
+          <button role="tab" type="button" className="tab" aria-selected={viewTab === '3d'} onClick={() => setViewTab('3d')} data-testid="tab-3d">
+            3D
+          </button>
           <button role="tab" type="button" className="tab hidden lg:block" aria-selected={viewTab === 'summary'} onClick={() => setViewTab('summary')} data-testid="tab-summary">
             Resumo do projeto
           </button>
         </div>
         <span className="flex-1" />
+        {viewTab !== '3d' && viewTab !== 'summary' && (
+          <>
         <button type="button" className={`btn-ghost ${showGrid ? 'text-accent' : ''}`} aria-pressed={showGrid} onClick={() => setShowGrid((g) => !g)}>
           <Icon name="grid" /> Grade
         </button>
         <button type="button" className={`btn-ghost ${showDims ? 'text-accent' : ''}`} aria-pressed={showDims} onClick={() => setShowDims((d) => !d)}>
           <Icon name="ruler" /> Cotas
         </button>
+          </>
+        )}
       </div>
       <StatusBar issues={project.issues} />
       <div className={`card relative min-h-[320px] flex-1 ${viewTab === 'summary' ? 'overflow-y-auto p-4' : 'overflow-hidden'}`} data-testid="viewer">
         {viewTab === 'summary' && isDesktop ? (
           <Summary project={project} accessories={accessories} actions={actions} />
+        ) : viewTab === '3d' ? (
+          <Suspense fallback={<p className="p-6 text-sm text-muted">Carregando visualização 3D…</p>}>
+            <Viewer3D solids={solids3d} fitKey={`${Math.round(config.top.length)}|${Math.round(config.top.width)}|${project.parts.length}`} />
+          </Suspense>
         ) : viewTab === 'top' ? (
           <TopView project={project} showGrid={showGrid} showDims={showDims} />
         ) : (

@@ -28,6 +28,9 @@ laterais e reforços) e de acessórios compatíveis com a mesma malha de furos.
   exportação fica bloqueada.
 - **Visualização 2D** em SVG (vista superior e peças separadas), com zoom, arraste, grade, cotas
   e seleção de peça.
+- **Visualização 3D** da mesa e dos acessórios montados (Three.js), com vista explodida. Cada
+  chapa é extrudada do mesmo contorno que vai para o DXF e posicionada pela mesma posição usada
+  na vista superior. É só visualização: não gera STEP.
 - **Exportação**: DXF por peça, ZIP completo, lista de peças em CSV, especificações técnicas e
   pedido de orçamento pronto para copiar.
 - **Salvar e carregar** o projeto em JSON, com salvamento automático no navegador.
@@ -107,10 +110,10 @@ intencionais.
 
 ## Tecnologias
 
-React 19, TypeScript, Vite, Tailwind CSS 4, SVG, `@tarikjabiri/dxf`, JSZip, Vitest e Playwright.
+React 19, TypeScript, Vite, Tailwind CSS 4, SVG, Three.js (carregado só ao abrir a aba 3D),
+`@tarikjabiri/dxf`, JSZip, Vitest e Playwright.
 O motor geométrico (`src/engine`) não depende do React. Uma única representação de cada peça
-alimenta a visualização, o DXF, a lista de peças e a validação. Cada peça guarda também a sua
-posição 3D, para uma futura visualização com Three.js.
+alimenta a visualização 2D e 3D, o DXF, a lista de peças e a validação.
 
 ## Executar localmente
 
@@ -157,6 +160,7 @@ a cada push na branch `main`.
   manual de reforços e sem aproveitamento de chapa (*nesting*).
 - Acessórios: as posições de alguns furos dos reforços do esquadro não têm cota no modelo
   original e seguem uma regra própria (ver documentação). Não há exportação STEP.
+- O 3D não detecta interferências entre sólidos; as verificações de montagem são as do motor 2D.
 - Área e massa são estimativas (aço a 7,85 g/cm³).
 
 ## Aviso sobre fabricação

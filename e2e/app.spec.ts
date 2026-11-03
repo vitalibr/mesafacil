@@ -188,6 +188,36 @@ test('divulgação do canal ao abrir, uma vez a cada 7 dias', async ({ page }) =
   await expect(modal).toBeHidden()
 })
 
+test('visualização 3D desenha a mesa e o esquadro', async ({ page }, info) => {
+  await open(page)
+  await showPane(page, 'params')
+  await page.getByTestId('sides-toggle').click()
+  await showPane(page, 'view')
+  await page.getByTestId('tab-3d').click()
+  const canvas = page.getByTestId('viewer-3d').locator('canvas')
+  await expect(canvas).toBeVisible()
+  // a cena não pode estar vazia: conta cores diferentes do fundo
+  const painted = async () =>
+    canvas.evaluate((c: HTMLCanvasElement) => {
+      const tmp = document.createElement('canvas')
+      tmp.width = c.width
+      tmp.height = c.height
+      const ctx = tmp.getContext('2d')!
+      ctx.drawImage(c, 0, 0)
+      const d = ctx.getImageData(0, 0, tmp.width, tmp.height).data
+      let n = 0
+      for (let i = 0; i < d.length; i += 4 * 97) if (Math.abs(d[i] - 0xf4) > 12 || Math.abs(d[i + 2] - 0xf8) > 12) n++
+      return n
+    })
+  await expect.poll(painted).toBeGreaterThan(200)
+  await page.screenshot({ path: `${shots}/${info.project.name}-3d.png` })
+  await page.getByTestId('nav-accessories').click()
+  await page.getByTestId('configure-esquadro-90').click()
+  await page.getByTestId('accessory-tab-3d').click()
+  await expect(page.getByTestId('viewer-3d').locator('canvas')).toBeVisible()
+  await page.screenshot({ path: `${shots}/${info.project.name}-esquadro-3d.png` })
+})
+
 test('sem rolagem horizontal da página', async ({ page }) => {
   await open(page)
   for (const pane of ['params', 'view', 'summary'] as const) {

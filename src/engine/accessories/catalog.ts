@@ -453,11 +453,36 @@ function buildSquare(pattern: HolePattern, p: P): AccessoryBuild {
     { x: midHyp.x, y: midHyp.y, r: rad },
   ]
 
+  // montagem: X na largura, Y da frente da face para trás, Z para cima
   const parts: AccessoryPart[] = [
-    { id: 'face', name: 'Face vertical', thickness: t, geometry: { outer: faceOutline, holes: faceHoles, cutouts: faceCutouts } },
-    { id: 'base', name: 'Base', thickness: t, geometry: { outer: baseOutline, holes: [], cutouts: baseCutouts } },
-    { id: 'reforco-1', name: 'Reforço triangular', thickness: t, geometry: { outer: gussetOutline, holes: gussetHoles, cutouts: gussetCutouts } },
-    { id: 'reforco-2', name: 'Reforço triangular', thickness: t, geometry: { outer: gussetOutline, holes: gussetHoles, cutouts: gussetCutouts } },
+    {
+      id: 'face',
+      name: 'Face vertical',
+      thickness: t,
+      geometry: { outer: faceOutline, holes: faceHoles, cutouts: faceCutouts },
+      placement: { label: 'Face', origin: [0, 0, 0], u: [1, 0, 0], v: [0, 0, 1], n: [0, 1, 0] },
+    },
+    {
+      id: 'base',
+      name: 'Base',
+      thickness: t,
+      geometry: { outer: baseOutline, holes: [], cutouts: baseCutouts },
+      placement: { label: 'Base', origin: [cDepth, 0, 0], u: [1, 0, 0], v: [0, 1, 0], n: [0, 0, 1] },
+    },
+    {
+      id: 'reforco-1',
+      name: 'Reforço triangular',
+      thickness: t,
+      geometry: { outer: gussetOutline, holes: gussetHoles, cutouts: gussetCutouts },
+      placement: { label: 'Reforço esquerdo', origin: [cDepth, 0, 0], u: [0, 1, 0], v: [0, 0, 1], n: [1, 0, 0] },
+    },
+    {
+      id: 'reforco-2',
+      name: 'Reforço triangular',
+      thickness: t,
+      geometry: { outer: gussetOutline, holes: gussetHoles, cutouts: gussetCutouts },
+      placement: { label: 'Reforço direito', origin: [W - cDepth - t, 0, 0], u: [0, 1, 0], v: [0, 0, 1], n: [1, 0, 0] },
+    },
   ]
   return finish(parts, r, minWeb, [
     { label: 'Largura', value: W },
