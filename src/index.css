@@ -1,0 +1,82 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-page: #f4f5f7;
+  --color-surface: #ffffff;
+  --color-canvas: #fafbfc;
+  --color-line: #e3e6ea;
+  --color-line-strong: #cfd4da;
+  --color-ink: #1f2328;
+  --color-ink-soft: #3d434b;
+  --color-muted: #6a727c;
+  --color-accent: #2563eb;
+  --color-accent-soft: #e8efff;
+  --color-ok: #15803d;
+  --color-ok-soft: #e7f6ec;
+  --color-warn: #b45309;
+  --color-warn-soft: #fdf3e3;
+  --color-bad: #c62828;
+  --color-bad-soft: #fdecec;
+
+  /* desenho */
+  --color-plate: #ffffff;
+  --color-cut: #2b3138;
+  --color-hole: #1e3a8a;
+  --color-grid: #eceff3;
+  --color-under: #8a94a3;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-page font-sans text-ink antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+  input[type='number']::-webkit-inner-spin-button {
+    opacity: 0.4;
+  }
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-1.5 rounded-lg border border-line bg-surface px-3 py-1.5 text-sm font-medium text-ink-soft shadow-xs transition-colors hover:bg-page hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50;
+}
+@utility btn-primary {
+  @apply btn border-accent bg-accent text-white hover:bg-blue-700 hover:text-white;
+}
+@utility btn-ghost {
+  @apply btn border-transparent bg-transparent shadow-none;
+}
+@utility canvas-btn {
+  @apply flex h-9 w-9 items-center justify-center text-ink-soft hover:bg-page hover:text-ink focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent;
+}
+@utility card {
+  @apply rounded-xl border border-line bg-surface;
+}
+@utility field-input {
+  @apply w-full rounded-lg border border-line-strong bg-surface px-2.5 py-1.5 text-sm text-ink tabular-nums shadow-xs outline-none transition focus:border-accent focus:ring-3 focus:ring-accent/15 aria-invalid:border-bad aria-invalid:ring-bad/15;
+}
+@utility menu-item {
+  @apply flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-ink-soft hover:bg-page hover:text-ink focus-visible:bg-page focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40;
+}
+@utility tab {
+  @apply rounded-md px-3 py-1.5 text-sm font-medium text-muted transition-colors hover:text-ink aria-selected:bg-surface aria-selected:text-ink aria-selected:shadow-sm;
+}
+
+.stroke-grid {
+  stroke: var(--color-grid);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
