@@ -168,7 +168,7 @@ test('resumo e ações principais ficam visíveis sem rolar', async ({ page }) =
   await expect(strip.getByRole('button', { name: /Baixar projeto completo|ZIP/ })).toBeInViewport()
 })
 
-test('divulgação do canal ao abrir, uma vez a cada 7 dias', async ({ page }) => {
+test('divulgação do canal ao abrir, uma vez por dia', async ({ page }) => {
   await page.addInitScript(() => {
     localStorage.setItem('mesafacil:tutorial', 'concluido')
     if (!sessionStorage.getItem('visto')) {
@@ -186,6 +186,18 @@ test('divulgação do canal ao abrir, uma vez a cada 7 dias', async ({ page }) =
   await page.reload()
   await expect(page.getByRole('heading', { name: 'MesaFácil', exact: true })).toBeAttached()
   await expect(modal).toBeHidden()
+  // depois de 24 h volta a aparecer
+  await page.evaluate(() => localStorage.setItem('mesafacil:criador', String(Date.now() - 25 * 3600 * 1000)))
+  await page.reload()
+  await expect(modal).toBeVisible()
+})
+
+test('primeira visita: divulgação aparece depois do tutorial', async ({ page }) => {
+  await page.goto('./')
+  await expect(page.getByTestId('tutorial')).toBeVisible()
+  await expect(page.getByTestId('creator-modal')).toBeHidden()
+  await page.getByTestId('tutorial-skip').click()
+  await expect(page.getByTestId('creator-modal')).toBeVisible()
 })
 
 test('visualização 3D desenha a mesa e o esquadro', async ({ page }, info) => {

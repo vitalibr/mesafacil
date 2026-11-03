@@ -157,7 +157,8 @@ export default function App() {
   const [showDims, setShowDims] = useState(true)
   const [selected, setSelected] = useState<string | null>(null)
   const [tutorial, setTutorial] = useState(() => storage.get(TUTORIAL_KEY) === null)
-  // divulgação do criador: ao abrir, no máximo a cada 7 dias e nunca junto com o tutorial
+  // divulgação do criador: ao abrir a página, no máximo uma vez por dia; na primeira
+  // visita aparece logo depois do tutorial, nunca junto com ele
   const [creator, setCreator] = useState(() => !tutorial && creatorDue())
   useEffect(() => {
     if (creator) markCreatorShown()
@@ -377,7 +378,10 @@ export default function App() {
 
       <Tutorial
         open={tutorial}
-        onClose={() => setTutorial(false)}
+        onClose={() => {
+          setTutorial(false)
+          if (creatorDue()) setCreator(true)
+        }}
         onNavigate={(pg, pn) => {
           if (pg) setPage(pg)
           if (pn) setPane(pn)

@@ -8,9 +8,9 @@ export const CREATOR = {
 }
 
 const KEY = 'mesafacil:criador'
-const INTERVAL_MS = 7 * 24 * 60 * 60 * 1000
+const INTERVAL_MS = 24 * 60 * 60 * 1000
 
-/** Mostra a divulgação ao abrir a página, no máximo uma vez a cada 7 dias. */
+/** Mostra a divulgação ao abrir a página, no máximo uma vez por dia. */
 export function creatorDue(): boolean {
   const last = Number(storage.get(KEY) ?? 0)
   return !Number.isFinite(last) || Date.now() - last > INTERVAL_MS
