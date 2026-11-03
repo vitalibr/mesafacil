@@ -46,8 +46,9 @@ function withExplode(items: Input[], factor = 0.15): Solid[] {
 }
 
 /**
- * Mesa: o tampo sobe o suficiente para mostrar a estrutura; as laterais se
- * afastam só na horizontal; os reforços ficam no lugar.
+ * Mesa explodida em camadas: laterais se afastam na horizontal, reforços
+ * transversais sobem um pouco, longitudinais sobem mais (mostrando o encaixe
+ * de meia altura) e o tampo fica no alto.
  */
 export function tableSolids(parts: GeneratedPart[]): Solid[] {
   const items = parts.map((p) => ({ key: p.id, name: p.name, geometry: p.geometry, thickness: p.thickness, placement: p.placement, color: KIND_COLOR[p.kind] }))
@@ -58,7 +59,9 @@ export function tableSolids(parts: GeneratedPart[]): Solid[] {
   const depth = Math.max(100, ...cs.map((c) => -2 * c[2]))
   return items.map((it, i) => {
     const kind = parts[i].kind
-    if (kind === 'top') return { ...it, explode: [0, 0, depth * 1.6] }
+    if (kind === 'top') return { ...it, explode: [0, 0, depth * 3] }
+    if (kind === 'ribTransverse') return { ...it, explode: [0, 0, depth * 0.5] }
+    if (kind === 'ribLongitudinal') return { ...it, explode: [0, 0, depth * 1.6] }
     if (kind === 'sideLong' || kind === 'sideShort') {
       const dx = cs[i][0] - mid[0]
       const dy = cs[i][1] - mid[1]

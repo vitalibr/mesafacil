@@ -89,7 +89,7 @@ export default function Viewer3D({ solids, fitKey }: { solids: Solid[]; fitKey: 
       const vFov = THREE.MathUtils.degToRad(camera.fov)
       const hFov = 2 * Math.atan(Math.tan(vFov / 2) * camera.aspect)
       const dist = (size / 2 / Math.sin(Math.min(vFov, hFov) / 2)) * 1.05
-      const dir = new THREE.Vector3(0.9, -1.4, 0.9).normalize()
+      const dir = new THREE.Vector3(0.9, -1.4, 1.25).normalize()
       camera.position.copy(center).addScaledVector(dir, dist)
       camera.near = size / 100
       camera.far = size * 20
