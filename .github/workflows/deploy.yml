@@ -1,0 +1,61 @@
+name: Testes e publicação
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm ci
+      - name: Typecheck
+        run: npx tsc -b
+      - name: Lint
+        run: npx eslint .
+      - name: Testes unitários
+        run: npx vitest run
+      - name: Auditoria dos DXF com ezdxf
+        run: |
+          pip install ezdxf==1.4.5
+          npm run test:dxf
+      - name: Testes de interface (Playwright)
+        run: |
+          npx playwright install --with-deps chromium
+          npx playwright test
+      - name: Build
+        run: npx vite build
+      - uses: actions/upload-pages-artifact@v3
+        if: github.ref == 'refs/heads/main'
+        with:
+          path: dist
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: test-build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
