@@ -211,6 +211,13 @@ test('visualização 3D desenha a mesa e o esquadro', async ({ page }, info) => 
     })
   await expect.poll(painted).toBeGreaterThan(200)
   await page.screenshot({ path: `${shots}/${info.project.name}-3d.png` })
+  // animar montagem move o controle da vista explodida sozinho
+  const slider = page.locator('#explode')
+  await page.getByTestId('animate-assembly').click()
+  await expect(page.getByTestId('animate-assembly')).toHaveText('Parar')
+  await expect.poll(async () => Number(await slider.inputValue())).toBeGreaterThan(0.3)
+  await page.getByTestId('animate-assembly').click()
+  await expect(page.getByTestId('animate-assembly')).toHaveText('Animar montagem')
   await page.getByTestId('nav-accessories').click()
   await page.getByTestId('configure-esquadro-90').click()
   await page.getByTestId('accessory-tab-3d').click()

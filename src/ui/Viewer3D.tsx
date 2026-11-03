@@ -51,6 +51,8 @@ function solidGeometry(g: PartGeometry, thickness: number): THREE.BufferGeometry
 export default function Viewer3D({ solids, fitKey }: { solids: Solid[]; fitKey: string }) {
   const host = useRef<HTMLDivElement>(null)
   const [explode, setExplode] = useState(0)
+  const [animating, setAnimating] = useState(false)
+  const anim = useRef(0)
   const scene = useRef<{ group: THREE.Group; fit: () => void; render: () => void } | null>(null)
 
   // cena, câmera e controles (uma vez)
@@ -169,6 +171,33 @@ export default function Viewer3D({ solids, fitKey }: { solids: Solid[]; fitKey: 
     ctx.render()
   }, [explode, geometries])
 
+  // animação: desmonta e monta de novo, com aceleração suave (ida e volta em ~3,6 s)
+  useEffect(() => {
+    if (!animating) return
+    const start = performance.now()
+    const from = explode
+    const period = 3600
+    const step = (now: number) => {
+      const t = ((now - start) / period) % 1
+      // começa do estado atual e oscila entre montado (0) e desmontado (1)
+      const phase = (Math.acos(1 - 2 * from) / Math.PI + 2 * t) % 2
+      setExplode((1 - Math.cos(Math.PI * phase)) / 2)
+      anim.current = requestAnimationFrame(step)
+    }
+    anim.current = requestAnimationFrame(step)
+    return () => cancelAnimationFrame(anim.current)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animating])
+
+  const toggleAnimation = () => {
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      // sem animação: só alterna entre montado e desmontado
+      setExplode((e) => (e > 0.5 ? 0 : 1))
+      return
+    }
+    setAnimating((a) => !a)
+  }
+
   // reenquadra quando o conjunto muda de tamanho
   useEffect(() => {
     scene.current?.fit()
@@ -181,7 +210,22 @@ export default function Viewer3D({ solids, fitKey }: { solids: Solid[]; fitKey: 
         <label htmlFor="explode" className="font-medium">
           Vista explodida
         </label>
-        <input id="explode" type="range" min={0} max={1} step={0.01} value={explode} onChange={(e) => setExplode(Number(e.target.value))} className="w-28 accent-accent" />
+        <input
+          id="explode"
+          type="range"
+          min={0}
+          max={1}
+          step={0.01}
+          value={explode}
+          onChange={(e) => {
+            setAnimating(false)
+            setExplode(Number(e.target.value))
+          }}
+          className="w-28 accent-accent"
+        />
+        <button type="button" className="font-medium text-accent hover:underline" onClick={toggleAnimation} aria-pressed={animating} data-testid="animate-assembly">
+          {animating ? 'Parar' : 'Animar montagem'}
+        </button>
         <button type="button" className="font-medium text-accent hover:underline" onClick={() => scene.current?.fit()}>
           Enquadrar
         </button>
