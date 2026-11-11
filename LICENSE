@@ -1,0 +1,70 @@
+MesaFácil · Licença de uso
+
+Copyright (c) 2026 Vitali M. (VM Garage). Todos os direitos reservados.
+
+O MesaFácil (o código-fonte, o código publicado no site, os algoritmos de geração das peças, o
+visual e os textos) é de propriedade do autor. Esta licença diz o que é permitido sem pedir
+autorização.
+
+1. O que é permitido
+   a) Usar gratuitamente o site oficial, https://mesafacil.vmgarage.com.br/, para projetar
+      mesas de solda e acessórios.
+   b) Baixar os arquivos gerados (DXF, CSV, ZIP) para fabricar as suas próprias peças.
+   c) Enviar esses arquivos para qualquer empresa de corte a laser ou serralheria fabricar as
+      peças para você. A empresa pode cobrar normalmente pelo corte e pela fabricação.
+
+2. O que não é permitido sem autorização prévia e por escrito do autor
+   a) Copiar, baixar para redistribuir, hospedar ou espelhar o código do MesaFácil, no todo ou em
+      parte, em qualquer site, aplicativo ou servidor.
+   b) Modificar, descompilar, desofuscar ou fazer engenharia reversa do código para reaproveitá-lo.
+   c) Criar produtos, sites ou serviços derivados do MesaFácil ou incorporar partes dele em outro
+      software.
+   d) Usar o MesaFácil, cópias ou derivados para fins lucrativos, por exemplo: vender, alugar ou
+      cobrar acesso à ferramenta; oferecer como serviço próprio um gerador baseado nela; vender
+      os projetos ou arquivos gerados como produto (como pacotes de DXF de mesas ou acessórios).
+   e) Apresentar o MesaFácil, ou os desenhos gerados por ele, como obra própria ou retirar os
+      créditos ao autor.
+
+3. Versões anteriores
+   O código publicado até 07/11/2026 (até a versão 7779062) foi distribuído sob a licença MIT, e
+   as cópias obtidas naquele período continuam regidas por ela. Esta licença vale para todas as
+   versões publicadas a partir de então.
+
+4. Sem garantia
+   O MesaFácil é oferecido "como está", sem garantia de qualquer tipo. Confira as medidas antes
+   de fabricar. O autor não responde por danos decorrentes do uso dos desenhos.
+
+5. Autorizações e contato
+   Para pedir autorização de uso comercial ou parceria: Instagram @vmgarage.oficial
+   (https://www.instagram.com/vmgarage.oficial/).
+
+--------------------------------------------------------------------------------
+
+MesaFácil · License (English translation; the Portuguese text above prevails)
+
+Copyright (c) 2026 Vitali M. (VM Garage). All rights reserved.
+
+MesaFácil (the source code, the code published on the site, the part generation algorithms, the
+design and the texts) belongs to the author.
+
+1. Allowed: using the official site, https://mesafacil.vmgarage.com.br/, free of charge to
+   design welding tables and accessories; downloading the generated files (DXF, CSV, ZIP) to build
+   your own parts; sending them to any laser cutting shop or fabricator, which may charge normally
+   for cutting and fabrication.
+
+2. Not allowed without the author's prior written permission: copying, downloading for
+   redistribution, hosting or mirroring MesaFácil's code, in whole or in part; modifying,
+   decompiling, deobfuscating or reverse engineering it for reuse; creating derived products,
+   sites or services or incorporating parts of it into other software; using MesaFácil, copies or
+   derivatives for profit (selling, renting or charging for access to the tool, offering a
+   generator based on it as your own service, selling the generated projects or files as a
+   product); presenting MesaFácil, or the drawings it generates, as your own work or removing the
+   author's credits.
+
+3. Earlier versions: code published up to 2026-11-07 (up to version 7779062) was distributed under
+   the MIT license, and copies obtained during that period remain under it. This license applies
+   to all versions published from then on.
+
+4. No warranty: MesaFácil is provided "as is", without warranty of any kind.
+
+5. Permissions and contact: Instagram @vmgarage.oficial.
